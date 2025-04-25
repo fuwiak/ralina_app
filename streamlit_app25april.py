@@ -47,8 +47,10 @@ def robust_load(h5_path: str) -> tf.keras.Model:
 # ─── 5. кэш-загрузка моделей ───
 @st.cache_resource(show_spinner=False)
 def load_models():
-    coll_p   = "collapse_model (1).h5"
-    danger_p = "danger_model (1).h5"
+    # coll_p   = "collapse_model (1).h5"
+    # danger_p = "danger_model (1).h5"
+    coll_p   = "collapse_model.h5"
+    danger_p = "danger_model.h5"
 
     coll = robust_load(coll_p)   if os.path.exists(coll_p)   else None
     if not os.path.exists(danger_p):
