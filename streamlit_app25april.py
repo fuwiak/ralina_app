@@ -28,15 +28,15 @@ CUSTOM_OBJECTS = {
 
 @st.cache_resource(show_spinner=False)
 def load_models():
-    coll = tf.keras.models.load_model("collapse_model.h5",
+    coll = tf.keras.models.load_model("collapse_model (1).h5",
                                       compile=False,
                                       custom_objects=CUSTOM_OBJECTS) \
-           if os.path.exists("collapse_model.h5") else None
+           if os.path.exists("collapse_model (1).h5") else None
 
-    if not os.path.exists("danger_model.h5"):
-        st.error("Файл **danger_model.h5** не найден."); st.stop()
+    if not os.path.exists("danger_model (1).h5"):
+        st.error("Файл **danger_model (1).h5** не найден."); st.stop()
 
-    dang = tf.keras.models.load_model("danger_model.h5",
+    dang = tf.keras.models.load_model("danger_model (1).h5",
                                       compile=False,
                                       custom_objects=CUSTOM_OBJECTS)
     return coll, dang
