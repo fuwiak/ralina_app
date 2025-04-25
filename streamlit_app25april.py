@@ -5,11 +5,26 @@ import streamlit as st, tensorflow as tf, numpy as np, os, tempfile, sys, subpro
 # — headless OpenCV —
 def safe_cv2():
     try:
-        return importlib.import_module("cv2")
-    except ImportError:
-        subprocess.check_call([sys.executable, "-m", "pip", "install",
-                               "--quiet", "opencv-python-headless==4.7.0.72"])
-        return importlib.import_module("cv2")
+        import cv2
+        return cv2
+    except Exception as first_err:
+        try:
+            import subprocess, sys, importlib
+            # >=4.9.0.80 есть колёса под 3.12
+            subprocess.check_call([
+                sys.executable, "-m", "pip", "install", "--quiet",
+                "opencv-python-headless>=4.9.0.80"
+            ])
+            return importlib.import_module("cv2")
+        except Exception as second_err:
+            st.error(
+                "Не удалось установить **opencv-python-headless**.\n\n"
+                f"Первая ошибка: {first_err}\n\n"
+                f"Повторная попытка: {second_err}\n\n"
+                "Попробуйте вручную:  \n"
+                "`pip install opencv-python-headless>=4.9.0.80`"
+            )
+            st.stop()
 cv2 = safe_cv2()
 
 IMG, STEP, THR = 150, 10, 0.60
@@ -20,16 +35,16 @@ DANGER_CLASSES   = ["Safe", "Roads_Damaged", "Houses_Damaged"]
 def load_models():
     coll = None
     try:
-        if os.path.exists("collapse_model.h5"):
+        if os.path.exists("collapse_model (1).h5"):
             # ① Keras-3: отключаем safe_mode → игнорируем незнакомые слои Cast/TFOpLambda
-            coll = tf.keras.models.load_model("collapse_model.h5",
+            coll = tf.keras.models.load_model("collapse_model (1).h5",
                                               compile=False, safe_mode=False)
     except Exception as e:
-        st.warning(f"collapse_model.h5 не удалось открыть: {e}")
-    if not os.path.exists("danger_model.h5"):
-        st.error("Файл danger_model.h5 не найден."); st.stop()
+        st.warning(f"collapse_model (1).h5 не удалось открыть: {e}")
+    if not os.path.exists("danger_model (1).h5"):
+        st.error("Файл danger_model (1).h5 не найден."); st.stop()
     # ② аналогично для danger
-    danger = tf.keras.models.load_model("danger_model.h5",
+    danger = tf.keras.models.load_model("danger_model (1).h5",
                                         compile=False, safe_mode=False)
     return coll, danger
 collapse_model, danger_model = load_models()
