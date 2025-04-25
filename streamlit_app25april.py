@@ -7,10 +7,15 @@ import streamlit as st, tensorflow as tf, numpy as np, tempfile, os, sys, subpro
 def safe_import_cv2():
     try:
         return importlib.import_module("cv2")
-    except ImportError:
-        subprocess.check_call([sys.executable, "-m", "pip", "install",
-                               "--quiet", "opencv-python-headless==4.7.0.72"])
-        return importlib.import_module("cv2")
+    except ModuleNotFoundError:
+        st.error(
+            "Модуль **opencv-python-headless** не установлен.\n\n"
+            "➜  Добавьте строку  \n"
+            "`opencv-python-headless>=4.9.0.80`  \n"
+            "в файл *requirements.txt* вашего приложения и перезапустите."
+        )
+        st.stop()
+
 cv2 = safe_import_cv2()
 
 # ─── константы ───
