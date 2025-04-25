@@ -6,16 +6,17 @@ import streamlit as st, tensorflow as tf, numpy as np, tempfile, os, sys, subpro
 # ─── безопасный импорт OpenCV (headless) ───
 def safe_import_cv2():
     try:
-        return importlib.import_module("cv2")
-    except ModuleNotFoundError:
+        import cv2                # пробуем как есть
+        return cv2
+    except Exception as err:      # ловим и ImportError, и libGL ошибки
         st.error(
-            "Модуль **opencv-python-headless** не установлен.\n\n"
-            "➜  Добавьте строку  \n"
-            "`opencv-python-headless>=4.9.0.80`  \n"
-            "в файл *requirements.txt* вашего приложения и перезапустите."
+            "OpenCV не удалось загрузить (обычно из-за libGL).\n\n"
+            "➜  Добавьте в  requirements.txt  строку\n"
+            "`opencv-python-headless>=4.9.0.80`\n"
+            "и удалите  opencv-python,  затем перезапустите приложение.\n\n"
+            f"Техническая детализация: {err}"
         )
         st.stop()
-
 cv2 = safe_import_cv2()
 
 # ─── константы ───
